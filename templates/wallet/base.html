@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>{{ user }}</h2>
+    <a href="{% url 'transactions' %}">View Transactions</a> |&nbsp;
+    <a href="{% url 'deposit' %}">Deposit</a> |&nbsp;
+    <a href="{% url 'withdraw' %}">Withdraw</a>
+    <hr/><br/>
+
+    {% block wallet_content %}
+        {% include 'wallet/transaction_table.html' %}
+    {% endblock %}
+{% endblock %}

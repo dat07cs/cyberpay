@@ -1,0 +1,8 @@
+{% extends 'wallet/base.html' %}
+
+<form action="{% url 'deposit' %}" method="post">
+    {% csrf_token %}
+    <label for="amount">Amount:</label>
+    <input type="number" step="0.01" placeholder="0.00" required/>
+    <input type="submit" value="OK">
+</form>
