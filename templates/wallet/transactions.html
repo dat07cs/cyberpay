@@ -2,25 +2,25 @@
 {% load humanize %}
 
 {% block content %}
-  <h2>Hi, {{ user }}!</h2>
+    <h2>Hi, {{ user }}!</h2>
     <table>
         <thead>
-            <tr>
-                <th>Time</th>
-                <th>Note</th>
-                <th>Amount</th>
-                <th>Current Balance</th>
-            </tr>
+        <tr>
+            <th>Time</th>
+            <th>Note</th>
+            <th>Amount</th>
+            <th>Current Balance</th>
+        </tr>
         </thead>
         <tbody>
-            {% for transaction in transactions %}
-                <tr>
-                    <td>{{ transaction.created|date:"Y-m-d H:m:s" }}</td>
-                    <td>{{ transaction.note|default_if_none:"" }}</td>
-                    <td>${{ transaction.amount|floatformat:2|intcomma }}</td>
-                    <td>${{ transaction.balance_after|floatformat:2|intcomma }}</td>
-                </tr>
-            {% endfor %}
+        {% for transaction in transactions %}
+            <tr>
+                <td>{{ transaction.created|date:"Y-m-d H:m:s" }}</td>
+                <td>{{ transaction.note|default_if_none:"" }}</td>
+                <td>${{ transaction.amount|floatformat:2|intcomma }}</td>
+                <td>${{ transaction.balance_after|floatformat:2|intcomma }}</td>
+            </tr>
+        {% endfor %}
         </tbody>
     </table>
 {% endblock %}
