@@ -1,0 +1,16 @@
+body {
+    margin: 0 10px;
+}
+
+.sidebar {
+    border-right: 1px solid gray;
+}
+
+.container {
+    padding-left: 30px;
+}
+
+.form-group.required .control-label:after {
+  content:"*";
+  color:red;
+}

@@ -1,22 +1,27 @@
-{% load humanize %}
+{% load core_filters %}
+{% load tz %}
 
-<table>
+<table class="table table-sm table-striped">
     <thead>
     <tr>
         <th>Time</th>
         <th>Note</th>
         <th>Amount</th>
-        <th>Current Balance</th>
+        <th>Balance Before</th>
+        <th>Balance After</th>
     </tr>
     </thead>
     <tbody>
-    {% for transaction in transactions %}
-        <tr>
-            <td>{{ transaction.created|date:"Y-m-d H:m:s" }}</td>
-            <td>{{ transaction.note|default_if_none:"" }}</td>
-            <td>${{ transaction.amount|floatformat:2|intcomma }}</td>
-            <td>${{ transaction.balance_after|floatformat:2|intcomma }}</td>
-        </tr>
-    {% endfor %}
+    {% localtime on %}
+        {% for transaction in transactions %}
+            <tr>
+                <td>{{ transaction.created|localtime|date:"Y-m-d H:i:s" }}</td>
+                <td>{{ transaction.note|default_if_none:"" }}</td>
+                <td>{{ transaction.amount|currency:2 }}</td>
+                <td>{{ transaction.balance_before|currency:2 }}</td>
+                <td>{{ transaction.balance_after|currency:2 }}</td>
+            </tr>
+        {% endfor %}
+    {% endlocaltime %}
     </tbody>
 </table>

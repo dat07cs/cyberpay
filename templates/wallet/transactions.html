@@ -1,6 +1,26 @@
 {% extends 'wallet/base.html' %}
 {% load humanize %}
 
+{% block heading %}
+    All transactions
+{% endblock %}
+
 {% block wallet_content %}
     {% include 'wallet/transaction_table.html' %}
+
+    <div class="pagination">
+    <span class="step-links">
+        {% if transactions.has_previous %}
+            <a href="?page={{ transactions.previous_page_number }}">Previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ transactions.number }} of {{ transactions.paginator.num_pages }}
+        </span>
+
+        {% if transactions.has_next %}
+            <a href="?page={{ transactions.next_page_number }}">Next</a>
+        {% endif %}
+    </span>
+    </div>
 {% endblock %}

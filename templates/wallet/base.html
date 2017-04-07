@@ -1,13 +1,21 @@
 {% extends 'base.html' %}
+{% load core_filters %}
 
 {% block content %}
-    <h2>{{ user }}</h2>
-    <a href="{% url 'transactions' %}">View Transactions</a> |&nbsp;
-    <a href="{% url 'deposit' %}">Deposit</a> |&nbsp;
-    <a href="{% url 'withdraw' %}">Withdraw</a>
-    <hr/><br/>
-
-    {% block wallet_content %}
-        {% include 'wallet/transaction_table.html' %}
-    {% endblock %}
+    <div class="sidebar col-2">
+        <h2><a href="{% url 'home' %}">{{ user }}</a></h2>
+        <h5>{{ user.account.balance|currency:2 }}</h5>
+        <ul>
+            <li><a href="{% url 'wallet:transactions' %}">View Transactions</a></li>
+            <li><a href="{% url 'wallet:deposit' %}">Deposit</a></li>
+            <li><a href="{% url 'wallet:withdraw' %}">Withdraw</a></li>
+        </ul>
+    </div>
+    <div class="container col-10">
+        <h2>{% block heading %}Recent transactions{% endblock %}</h2>
+        <br/>
+        {% block wallet_content %}
+            {% include 'wallet/transaction_table.html' %}
+        {% endblock %}
+    </div>
 {% endblock %}
