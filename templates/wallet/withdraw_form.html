@@ -13,6 +13,7 @@
                 <label for="{{ form.amount.id_for_label }}" class="col-form-label col-2">Amount ($)</label>
                 <div class="col-10">
                     <input class="form-control" type="number" step="0.01" placeholder="0.00"
+                           value="{{ form.amount.value }}"
                            id="{{ form.amount.id_for_label }}" name="{{ form.amount.name }}">
                     <span class="form-control-feedback">{{ form.amount.errors }}</span>
                 </div>
@@ -21,7 +22,8 @@
                 <label for="{{ form.note.id_for_label }}" class="col-form-label col-2">Note</label>
                 <div class="col-10">
                     <textarea class="form-control" placeholder="Note to the transaction"
-                              id="{{ form.note.id_for_label }}" name="{{ form.note.name }}"></textarea>
+                              id="{{ form.note.id_for_label }}" name="{{ form.note.name }}">{% if form.note.value %}
+                        {{ form.note.value }}{% endif %}</textarea>
                     <span class="form-control-feedback">{{ form.note.errors }}</span>
                 </div>
             </div>

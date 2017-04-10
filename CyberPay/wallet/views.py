@@ -36,10 +36,12 @@ def transactions(request):
 @login_required
 def deposit(request):
     if request.method == "POST":
-        form = MyForm(request.POST, user=request.user)
+        form = MyForm(request.POST)
         if form.is_valid():
-            create_transaction(Account.objects.get(pk=request.user.id), form.cleaned_data['amount'],
-                               form.cleaned_data['note'])
+            with transaction.atomic():
+                create_transaction(Account.objects.select_for_update().get(user_id=request.user.id),
+                                   form.cleaned_data['amount'],
+                                   form.cleaned_data['note'])
             return HttpResponseRedirect(reverse('wallet:transactions'))
     else:
         form = MyForm()
@@ -49,16 +51,17 @@ def deposit(request):
 @login_required
 def withdraw(request):
     if request.method == "POST":
-        form = MyForm(request.POST, user=request.user, deposit=False)
+        form = MyForm(request.POST)
         if form.is_valid():
-            account = Account.objects.get(pk=request.user.id)
             amount = form.cleaned_data['amount']
-            if amount <= account.balance:
-                create_transaction(account, amount * -1, form.cleaned_data['note'])
-                return HttpResponseRedirect(reverse('wallet:transactions'))
-            else:
-                form.add_error(form.amount,
-                               "Cannot withdraw more than the current balance of ${:,.2f}".format(account.balance))
+            with transaction.atomic():
+                account = Account.objects.select_for_update().get(user_id=request.user.id)
+                if amount <= account.balance:
+                    create_transaction(account, amount * -1, form.cleaned_data['note'])
+                    return HttpResponseRedirect(reverse('wallet:transactions'))
+                else:
+                    form.add_error('amount',
+                                   "Cannot withdraw more than the current balance of ${:,.2f}".format(account.balance))
     else:
         form = MyForm()
     return render(request, 'wallet/withdraw_form.html', {'form': form})
@@ -69,8 +72,6 @@ def create_transaction(account, amount, note):
     account.balance = old_balance + amount
     now = timezone.now()
     account.updated = now
-    with transaction.atomic():
-        account.save()
-        t = Transaction.objects.create(account=account, created=now, balance_before=old_balance,
-                                       balance_after=account.balance, note=note)
-    return t
+    account.save()
+    return Transaction.objects.create(account=account, created=now, balance_before=old_balance,
+                                      balance_after=account.balance, note=note)

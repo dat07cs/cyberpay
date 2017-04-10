@@ -22,7 +22,7 @@ class Account(models.Model):
 
 class Transaction(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
-    created = models.DateTimeField()
+    created = models.DateTimeField(default=timezone.now)
     balance_before = models.DecimalField(decimal_places=6, max_digits=20)
     balance_after = models.DecimalField(decimal_places=6, max_digits=20)
     note = models.CharField(max_length=255, null=True)
